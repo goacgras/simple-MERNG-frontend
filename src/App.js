@@ -5,6 +5,8 @@ import { Container } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 import './App.css';
 
+import { AuthProvider } from './context/auth';
+import AuthRoutes from './util/AuthRoutes';
 import MenuBar from './components/MenuBar';
 import Home from './Pages/Home';
 import Login from './Pages/Login';
@@ -19,19 +21,20 @@ function App() {
         setActiveItem(name);
     };
 
-    // console.log(activeItem);
     return (
-        <BrowserRouter>
-            <Container>
-                <MenuBar
-                    handleItemClick={handleItemClick}
-                    activeItem={activeItem}
-                />
-                <Route exact path="/" component={Home} />
-                <Route exact path="/login" component={Login} />
-                <Route exact path="/register" component={Register} />
-            </Container>
-        </BrowserRouter>
+        <AuthProvider>
+            <BrowserRouter>
+                <Container>
+                    <MenuBar
+                        handleItemClick={handleItemClick}
+                        activeItem={activeItem}
+                    />
+                    <Route exact path="/" component={Home} />
+                    <AuthRoutes exact path="/login" component={Login} />
+                    <AuthRoutes exact path="/register" component={Register} />
+                </Container>
+            </BrowserRouter>
+        </AuthProvider>
     );
 }
 
