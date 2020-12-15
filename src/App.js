@@ -11,6 +11,7 @@ import MenuBar from './components/MenuBar';
 import Home from './Pages/Home';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
+import SinglePost from './Pages/SinglePost';
 
 function App() {
     const pathname = window.location.pathname;
@@ -32,6 +33,7 @@ function App() {
                     <Route exact path="/" component={Home} />
                     <AuthRoutes exact path="/login" component={Login} />
                     <AuthRoutes exact path="/register" component={Register} />
+                    <Route exact path="/posts/:postId" component={SinglePost} />
                 </Container>
             </BrowserRouter>
         </AuthProvider>

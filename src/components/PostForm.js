@@ -1,10 +1,9 @@
-import gql from 'graphql-tag';
-import React from 'react';
 import { useMutation } from '@apollo/react-hooks';
 
 import { Button, Form } from 'semantic-ui-react';
 
 import { useForm } from '../util/hooks/hooks';
+import { FETCH_POSTS_QUERY, ADD_NEW_POST } from '../util/graphqlQuery';
 
 const PostForm = () => {
     const { onChangeHandler, onSubmitHandler, values } = useForm(
@@ -15,10 +14,20 @@ const PostForm = () => {
     );
 
     const [addNewPost, { error }] = useMutation(ADD_NEW_POST, {
-        update: (_, data) => {
-            console.log(data);
+        update: (proxy, newData) => {
+            //get data in cache
+            const data = proxy.readQuery({
+                query: FETCH_POSTS_QUERY
+            });
+            //add newData to data
+            //add data to cache
+            proxy.writeQuery({
+                query: FETCH_POSTS_QUERY,
+                data: { getPosts: [newData.data.createPost, ...data.getPosts] }
+            });
             values.body = '';
         },
+        onError: () => {},
         variables: values
     });
 
@@ -27,45 +36,31 @@ const PostForm = () => {
     }
 
     return (
-        <Form onSubmit={onSubmitHandler}>
-            <h2>Create a Post: </h2>
-            <Form.Field>
-                <Form.Input
-                    placeholder="Hi World"
-                    name="body"
-                    onChange={onChangeHandler}
-                    value={values.body}
-                />
-                <Button type="submit" color="teal">
-                    Submit
-                </Button>
-            </Form.Field>
-        </Form>
+        <>
+            <Form onSubmit={onSubmitHandler}>
+                <h2>Create a Post: </h2>
+                <Form.Field>
+                    <Form.Input
+                        placeholder="Hi World"
+                        name="body"
+                        onChange={onChangeHandler}
+                        value={values.body}
+                        error={error ? true : false}
+                    />
+                    <Button type="submit" color="teal">
+                        Submit
+                    </Button>
+                </Form.Field>
+            </Form>
+            {error && (
+                <div className="ui error message" style={{ marginBottom: 20 }}>
+                    <ul className="list">
+                        <li>{error.graphQLErrors[0].message}</li>
+                    </ul>
+                </div>
+            )}
+        </>
     );
 };
-
-const ADD_NEW_POST = gql`
-    mutation createPost($body: String!) {
-        createPost(body: $body) {
-            id
-            body
-            createdAt
-            username
-            likes {
-                id
-                username
-                createdAt
-            }
-            likeCount
-            comments {
-                id
-                body
-                username
-                createdAt
-            }
-            commentCount
-        }
-    }
-`;
 
 export default PostForm;
