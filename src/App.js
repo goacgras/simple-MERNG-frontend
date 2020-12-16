@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
 
@@ -11,7 +11,11 @@ import MenuBar from './components/MenuBar';
 import Home from './Pages/Home';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
-import SinglePost from './Pages/SinglePost';
+// import SinglePost from './Pages/SinglePost';
+
+// const Login = lazy(() => import('./Pages/Login'));
+// const Register = lazy(() => import('./Pages/Login'));
+const SinglePost = lazy(() => import('./Pages/SinglePost'));
 
 function App() {
     const pathname = window.location.pathname;
@@ -30,10 +34,20 @@ function App() {
                         handleItemClick={handleItemClick}
                         activeItem={activeItem}
                     />
-                    <Route exact path="/" component={Home} />
-                    <AuthRoutes exact path="/login" component={Login} />
-                    <AuthRoutes exact path="/register" component={Register} />
-                    <Route exact path="/posts/:postId" component={SinglePost} />
+                    <Suspense fallback={<p>Loading...</p>}>
+                        <Route exact path="/" component={Home} />
+                        <AuthRoutes exact path="/login" component={Login} />
+                        <AuthRoutes
+                            exact
+                            path="/register"
+                            component={Register}
+                        />
+                        <Route
+                            exact
+                            path="/posts/:postId"
+                            render={() => <SinglePost />}
+                        />
+                    </Suspense>
                 </Container>
             </BrowserRouter>
         </AuthProvider>

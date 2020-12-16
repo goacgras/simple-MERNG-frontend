@@ -5,6 +5,7 @@ import { useMutation } from '@apollo/react-hooks';
 import { LIKE_POST_MUTATION } from '../util/graphqlQuery';
 
 import { Button, Label, Icon } from 'semantic-ui-react';
+import GrasPopup from './GrasPopup';
 
 const LikeButton = ({ user, post: { id, likeCount, likes } }) => {
     const [liked, setLiked] = useState(false);
@@ -37,7 +38,10 @@ const LikeButton = ({ user, post: { id, likeCount, likes } }) => {
 
     return (
         <Button as="div" labelPosition="right" onClick={likePost}>
-            {likeButton}
+            <GrasPopup content={liked ? 'Unlike' : 'Like'}>
+                {likeButton}
+            </GrasPopup>
+
             <Label basic color="teal" pointing="left">
                 {likeCount}
             </Label>

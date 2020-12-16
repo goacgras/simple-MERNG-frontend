@@ -10,6 +10,7 @@ import { AuthContext } from '../context/auth';
 import DeleteButton from '../components/DeleteButton';
 import CommentList from '../components/CommentList';
 import CommentForm from '../components/CommentForm';
+import GrasPopup from '../components/GrasPopup';
 
 const SinglePost = (props) => {
     const { postId } = useParams();
@@ -69,24 +70,26 @@ const SinglePost = (props) => {
                                         user={user}
                                         post={{ id, likeCount, likes }}
                                     />
-                                    <Button
-                                        as="div"
-                                        labelPosition="right"
-                                        onClick={() =>
-                                            console.log('comment on post')
-                                        }
-                                    >
-                                        <Button basic color="blue">
-                                            <Icon name="comments" />
-                                        </Button>
-                                        <Label
-                                            basic
-                                            color="blue"
-                                            pointing="left"
+                                    <GrasPopup content="Comment on post">
+                                        <Button
+                                            as="div"
+                                            labelPosition="right"
+                                            onClick={() =>
+                                                console.log('comment on post')
+                                            }
                                         >
-                                            {commentCount}
-                                        </Label>
-                                    </Button>
+                                            <Button basic color="blue">
+                                                <Icon name="comments" />
+                                            </Button>
+                                            <Label
+                                                basic
+                                                color="blue"
+                                                pointing="left"
+                                            >
+                                                {commentCount}
+                                            </Label>
+                                        </Button>
+                                    </GrasPopup>
                                     {user && user.username === username && (
                                         <DeleteButton
                                             postId={id}

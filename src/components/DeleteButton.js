@@ -7,6 +7,7 @@ import {
     FETCH_POSTS_QUERY,
     DELETE_COMMENT_MUTATION
 } from '../util/graphqlQuery';
+import GrasPopup from './GrasPopup';
 
 const DeleteButton = ({ postId, callback, commentId }) => {
     const [confimOpen, setConfirmOpen] = useState(false);
@@ -40,14 +41,17 @@ const DeleteButton = ({ postId, callback, commentId }) => {
 
     return (
         <>
-            <Button
-                as="div"
-                color="red"
-                floated="right"
-                onClick={() => setConfirmOpen(true)}
-            >
-                <Icon name="trash" style={{ margin: 0 }} />
-            </Button>
+            <GrasPopup content={commentId ? 'Delete comment' : 'Delete post'}>
+                <Button
+                    as="div"
+                    color="red"
+                    floated="right"
+                    onClick={() => setConfirmOpen(true)}
+                >
+                    <Icon name="trash" style={{ margin: 0 }} />
+                </Button>
+            </GrasPopup>
+
             <Confirm
                 // width={5}
                 open={confimOpen}
