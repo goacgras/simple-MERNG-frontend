@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, memo } from 'react';
 import { Card, Icon, Label, Image, Button } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
@@ -11,6 +11,7 @@ const PostCard = ({
     commentOnPostHandler,
     post: { body, createdAt, id, username, likeCount, commentCount, likes }
 }) => {
+    console.log('[POSTCARD RENDER] id: ', id);
     const { user } = useContext(AuthContext);
 
     return (
@@ -50,4 +51,12 @@ const PostCard = ({
     );
 };
 
-export default PostCard;
+const areEqual = (prevState, nextState) => {
+    if (prevState.post.likeCount === nextState.post.likeCount) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+export default memo(PostCard, areEqual);

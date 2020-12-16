@@ -1,28 +1,19 @@
-import { useContext, useRef, useState } from 'react';
+import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { FETCH_POST_QUERY } from '../util/graphqlQuery';
-import { useQuery, useMutation } from '@apollo/react-hooks';
-import {
-    Button,
-    Card,
-    Form,
-    Grid,
-    Icon,
-    Image,
-    Label
-} from 'semantic-ui-react';
+import { useQuery } from '@apollo/react-hooks';
+import { Button, Card, Grid, Icon, Image, Label } from 'semantic-ui-react';
 import moment from 'moment';
 
 import LikeButton from '../components/LikeButton';
 import { AuthContext } from '../context/auth';
 import DeleteButton from '../components/DeleteButton';
-import { CREATE_COMMENT_MUTATION } from '../util/graphqlQuery';
+import CommentList from '../components/CommentList';
+import CommentForm from '../components/CommentForm';
 
 const SinglePost = (props) => {
     const { postId } = useParams();
     const { user } = useContext(AuthContext);
-    const commentInputRef = useRef(null);
-    const [newComment, setNewComment] = useState('');
 
     let getPost = '';
     const { data } = useQuery(FETCH_POST_QUERY, {
@@ -34,17 +25,6 @@ const SinglePost = (props) => {
     if (data) {
         getPost = data.getPost;
     }
-
-    const [submitComment] = useMutation(CREATE_COMMENT_MUTATION, {
-        update: () => {
-            setNewComment('');
-            commentInputRef.current.blur();
-        },
-        variables: {
-            postId,
-            body: newComment
-        }
-    });
 
     const deletePostCallback = () => {
         props.history.push('/');
@@ -116,61 +96,12 @@ const SinglePost = (props) => {
                                 </Card.Content>
                             </Card.Content>
                         </Card>
-                        {user && (
-                            <Card fluid>
-                                <Card.Content>
-                                    <p>Post a comment</p>
-                                    <Form>
-                                        <div className="ui action input fluid">
-                                            <input
-                                                type="text"
-                                                placeholder="Comment..."
-                                                name="comment"
-                                                value={newComment}
-                                                onChange={(e) =>
-                                                    setNewComment(
-                                                        e.target.value
-                                                    )
-                                                }
-                                                ref={commentInputRef}
-                                            />
-                                            <button
-                                                className="ui button teal"
-                                                type="submit"
-                                                disabled={
-                                                    newComment.trim() === ''
-                                                }
-                                                onClick={submitComment}
-                                            >
-                                                Submit
-                                            </button>
-                                        </div>
-                                    </Form>
-                                </Card.Content>
-                            </Card>
-                        )}
-                        {comments.map((comment) => (
-                            <Card fluid key={comment.id}>
-                                <Card.Content>
-                                    {user &&
-                                        user.username === comment.username && (
-                                            <DeleteButton
-                                                postId={id}
-                                                commentId={comment.id}
-                                            />
-                                        )}
-                                    <Card.Header>
-                                        {comment.username}
-                                    </Card.Header>
-                                    <Card.Meta>
-                                        {moment(comment.createdAt).fromNow()}
-                                    </Card.Meta>
-                                    <Card.Description>
-                                        {comment.body}
-                                    </Card.Description>
-                                </Card.Content>
-                            </Card>
-                        ))}
+                        {user && <CommentForm postId={id} />}
+                        <CommentList
+                            comments={comments}
+                            user={user}
+                            postId={id}
+                        />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

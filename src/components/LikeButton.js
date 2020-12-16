@@ -8,9 +8,9 @@ import { Button, Label, Icon } from 'semantic-ui-react';
 
 const LikeButton = ({ user, post: { id, likeCount, likes } }) => {
     const [liked, setLiked] = useState(false);
-
     const [likePost] = useMutation(LIKE_POST_MUTATION, {
-        variables: { postId: id }
+        variables: { postId: id },
+        onError: () => {}
     });
 
     useEffect(() => {

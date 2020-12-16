@@ -1,11 +1,12 @@
 import { useContext } from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import { Grid, Transition } from 'semantic-ui-react';
+import { Grid } from 'semantic-ui-react';
 
 import PostForm from '../components/PostForm';
-import PostCard from '../components/PostCard';
+// import PostCard from '../components/PostCard';
 import { AuthContext } from '../context/auth';
 import { FETCH_POSTS_QUERY } from '../util/graphqlQuery';
+import PostList from '../components/PostList';
 
 const Home = () => {
     const { user } = useContext(AuthContext);
@@ -33,24 +34,12 @@ const Home = () => {
                     </Grid.Column>
                 )}
                 {loading ? (
-                    <p>Loading Posts...</p>
+                    <p>Loading posts</p>
                 ) : (
-                    <Transition.Group>
-                        {posts.data &&
-                            posts.data.map((post) => (
-                                <Grid.Column
-                                    key={post.id}
-                                    style={{ marginBottom: 20 }}
-                                >
-                                    <PostCard
-                                        post={post}
-                                        commentOnPostHandler={
-                                            commentOnPostHandler
-                                        }
-                                    />
-                                </Grid.Column>
-                            ))}
-                    </Transition.Group>
+                    <PostList
+                        posts={posts.data}
+                        commentOnPostHandler={commentOnPostHandler}
+                    />
                 )}
             </Grid.Row>
         </Grid>
